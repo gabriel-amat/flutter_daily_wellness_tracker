@@ -1,4 +1,4 @@
-import 'package:daily_wellness_tracker/features/addCalorie/routes/add_calorie_routes.dart';
+import 'package:daily_wellness_tracker/features/entry/routes/entry_routes.dart';
 import 'package:daily_wellness_tracker/features/home/routes/home_routes.dart';
 import 'package:daily_wellness_tracker/features/onboarding/routes/onboarding_routes.dart';
 import 'package:daily_wellness_tracker/features/onboarding/routes/onboarding_pages.dart';
@@ -8,7 +8,7 @@ class CustomRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final allRoutes = {
       ...HomeRoutes.routes,
-      ...AddCalorieRoutes.routes,
+      ...EntryRoutes.routes,
       ...OnboardingRoutes.routes,
       //
     };

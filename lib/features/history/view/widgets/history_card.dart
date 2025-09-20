@@ -1,21 +1,22 @@
 import 'package:daily_wellness_tracker/core/enums/consumptiom_item.dart';
+import 'package:daily_wellness_tracker/core/helper/extensions/string_to_date_extension.dart';
 import 'package:daily_wellness_tracker/features/history/viewModel/history_view_model.dart';
 import 'package:daily_wellness_tracker/shared/consumption/models/consumption_item.dart';
 import 'package:daily_wellness_tracker/shared/ui/snack/custom_snack.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class HistoryItem extends StatefulWidget {
+class HistoryCard extends StatefulWidget {
   final ConsumptionItemEntity item;
   final HistoryViewModel viewModel;
 
-  const HistoryItem({super.key, required this.item, required this.viewModel});
+  const HistoryCard({super.key, required this.item, required this.viewModel});
 
   @override
-  State<HistoryItem> createState() => _HistoryItemState();
+  State<HistoryCard> createState() => _HistoryCardState();
 }
 
-class _HistoryItemState extends State<HistoryItem> {
+class _HistoryCardState extends State<HistoryCard> {
   late CustomSnack customSnack;
 
   @override
@@ -95,7 +96,7 @@ class _HistoryItemState extends State<HistoryItem> {
     if (res == true) {
       final newValue = double.tryParse(controller.text);
 
-      if (newValue == null || newValue > 0) {
+      if (newValue == null || newValue <= 0) {
         customSnack.error(text: 'Por favor, insira um valor válido');
         return;
       }
@@ -147,7 +148,7 @@ class _HistoryItemState extends State<HistoryItem> {
               ),
             ),
             Text(
-              widget.item.date,
+              widget.item.date.toFormattedDate() ?? '',
               style: TextStyle(color: Colors.grey[600], fontSize: 12),
             ),
           ],

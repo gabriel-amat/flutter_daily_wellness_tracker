@@ -1,5 +1,5 @@
 import 'package:daily_wellness_tracker/core/routes/navigation_controller.dart';
-import 'package:daily_wellness_tracker/features/addCalorie/routes/add_calorie_pages.dart';
+import 'package:daily_wellness_tracker/features/entry/routes/entry_pages.dart';
 import 'package:daily_wellness_tracker/features/dashboard/view/widgets/progress_card.dart';
 import 'package:daily_wellness_tracker/features/dashboard/viewModel/dashboard_view_model.dart';
 import 'package:daily_wellness_tracker/features/settings/viewModel/settings_view_model.dart';
@@ -70,46 +70,37 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     },
                   ),
                   // Add Buttons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          navigator.push(routeName: AddCaloriePages.addCalorie);
-                        },
-                        icon: const Icon(Icons.restaurant),
-                        label: const Text('Add Meal'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 14,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(12),
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.grey.shade200,
+                          Colors.grey.shade100,
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          navigator.push(routeName: AddCaloriePages.addCalorie);
-                        },
-                        icon: const Icon(Icons.local_drink),
-                        label: const Text('Add Drink'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 14,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
+                    ),
+                  ),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      navigator.push(routeName: EntryPages.entry);
+                    },
+                    icon: const Icon(Icons.restaurant),
+                    label: const Text('Add Entry'),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 14,
                       ),
-                    ],
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
                   ),
                   // History
                   const Text(

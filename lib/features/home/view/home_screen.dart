@@ -1,4 +1,4 @@
-import 'package:daily_wellness_tracker/features/addCalorie/view/add_calorie_screen.dart';
+import 'package:daily_wellness_tracker/features/entry/view/entry_screen.dart';
 import 'package:daily_wellness_tracker/features/dashboard/view/dashboard_screen.dart';
 import 'package:daily_wellness_tracker/features/history/view/history_view.dart';
 import 'package:daily_wellness_tracker/features/settings/view/settings_screen.dart';
@@ -36,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
         physics: NeverScrollableScrollPhysics(),
         children: const [
           DashboardScreen(),
-          AddCalorieScreen(),
+          EntryScreen(),
           HistoryScreen(),
           SettingsScreen(),
         ],
@@ -47,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: onPageChanged,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Calorie'),
+          BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Entry'),
           BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),

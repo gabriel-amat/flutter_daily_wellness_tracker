@@ -1,6 +1,5 @@
 import 'package:daily_wellness_tracker/core/enums/consumptiom_item.dart';
 import 'package:daily_wellness_tracker/core/theme/app_colors.dart';
-import 'package:daily_wellness_tracker/core/theme/app_theme.dart';
 import 'package:daily_wellness_tracker/features/history/view/widgets/custom_filter_chip.dart';
 import 'package:daily_wellness_tracker/features/history/viewModel/history_view_model.dart';
 import 'package:flutter/material.dart';

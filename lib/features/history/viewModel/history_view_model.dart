@@ -192,19 +192,9 @@ class HistoryViewModel extends ChangeNotifier {
         .where((item) => item.type == ConsumptionType.water)
         .fold<double>(0.0, (total, item) => total + item.value);
 
-    final calorieEntries = _filteredItems
-        .where((item) => item.type == ConsumptionType.calories)
-        .length;
-
-    final waterEntries = _filteredItems
-        .where((item) => item.type == ConsumptionType.water)
-        .length;
-
     return {
       'totalCalories': calories,
       'totalWater': water,
-      'calorieEntries': calorieEntries,
-      'waterEntries': waterEntries,
       'totalEntries': _filteredItems.length,
     };
   }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:daily_wellness_tracker/core/database/db_helper.dart';
 import 'package:daily_wellness_tracker/shared/consumption/models/consumption_item.dart';
 import 'package:daily_wellness_tracker/core/enums/consumptiom_item.dart';
@@ -44,6 +45,7 @@ class ConsumptionDao {
   }
 
   Future<List<ConsumptionItemEntity>> getAllConsumptionItems() async {
+    log('Fetching all consumption items');
     final calories = await getConsumptionItemsByType(ConsumptionType.calories);
     final water = await getConsumptionItemsByType(ConsumptionType.water);
 

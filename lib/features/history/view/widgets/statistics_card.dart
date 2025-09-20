@@ -1,7 +1,6 @@
 import 'package:daily_wellness_tracker/core/theme/app_colors.dart';
-import 'package:flutter/material.dart';
-
 import 'package:daily_wellness_tracker/core/theme/app_theme.dart';
+import 'package:flutter/material.dart';
 
 class StatisticsCard extends StatelessWidget {
   final Map<String, dynamic> stats;
@@ -11,37 +10,22 @@ class StatisticsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withValues(alpha: 0.1),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+        border: Border.all(color: Colors.grey[300]!),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 12,
         children: [
-          const Text(
-            'Resumo',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: AppColors.primary,
-            ),
-          ),
-          const SizedBox(height: 12),
           Row(
             children: [
               Expanded(
                 child: _buildStatItem(
                   'Total de Calorias',
-                  '${stats['totalCalories'].toStringAsFixed(0)} kcal',
+                  '${stats['totalCalories']} kcal',
                   Icons.local_fire_department,
                   Colors.orange,
                 ),
@@ -50,14 +34,13 @@ class StatisticsCard extends StatelessWidget {
               Expanded(
                 child: _buildStatItem(
                   'Total de Água',
-                  '${stats['totalWater'].toStringAsFixed(0)} ml',
+                  '${stats['totalWater']} ml',
                   Icons.water_drop,
                   Colors.blue,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
           Row(
             children: [
               Expanded(
@@ -89,6 +72,7 @@ class StatisticsCard extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        spacing: 4,
         children: [
           Row(
             children: [
@@ -106,7 +90,6 @@ class StatisticsCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 4),
           Text(
             value,
             style: TextStyle(
