@@ -30,41 +30,13 @@ A Flutter application for tracking daily wellness activities including calorie i
 
 ## 🏗️ Architecture
 
-This project follows **Clean Architecture** principles with feature-based organization:
-
-```
-lib/
-├── core/                    # Core utilities and configurations
-│   ├── constants/          # App-wide constants
-│   ├── database/           # Database setup and migrations
-│   ├── dependencies/       # Dependency injection setup
-│   ├── enums/              # Application enumerations
-│   ├── helper/             # Utility helpers
-│   ├── routes/             # Navigation and routing
-│   └── theme/              # App theming and styling
-├── features/               # Feature-based modules
-│   ├── dashboard/          # Dashboard feature
-│   ├── entry/              # Entry management (calories/water)
-│   ├── history/            # History and analytics
-│   ├── home/               # Home screen and navigation
-│   ├── onboarding/         # User onboarding flow
-│   └── settings/           # App settings
-└── shared/                 # Shared components and services
-    ├── consumption/        # Consumption data models and services
-    └── ui/                 # Reusable UI components
-```
+This project follows **Clean Architecture** principles with feature-based organization
 
 ### 🎯 **Design Patterns Used**
 - **MVVM (Model-View-ViewModel)**: Clean separation of concerns
 - **Provider Pattern**: State management with Provider
 - **Repository Pattern**: Data access abstraction
 - **Dependency Injection**: Modular and testable code structure
-
-## 🛠️ Tech Stack
-
-- **State Management**: Provider
-- **Local Storage**: SharedPreferences
-- **Architecture**: Clean Architecture with MVVM
 
 ## 👨‍💻 Author
 
