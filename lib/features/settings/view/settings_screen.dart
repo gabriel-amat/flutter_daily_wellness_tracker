@@ -1,4 +1,6 @@
 import 'package:daily_wellness_tracker/core/constants/app_constants.dart';
+import 'package:daily_wellness_tracker/core/theme/app_colors.dart';
+import 'package:daily_wellness_tracker/core/theme/app_text_style.dart';
 import 'package:daily_wellness_tracker/core/theme/app_theme.dart';
 import 'package:daily_wellness_tracker/features/settings/viewModel/settings_view_model.dart';
 import 'package:daily_wellness_tracker/shared/consumption/service/consumption_service.dart';
@@ -41,6 +43,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               spacing: 8,
               children: [
+                Text("Settings", style: AppTextStyle.bigTitle),
+                SizedBox(height: 16),
+
                 const Text("Calories goal settings"),
 
                 Slider(
@@ -66,14 +71,26 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     viewModel.storeWaterGoal(value);
                   },
                 ),
-
-                Text("Clear data"),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    consumptionService.clearAllData();
-                  },
-
-                  label: const Text("Clear all data", ),
+                const Divider(thickness: 0.5, color: Colors.grey),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Delete data"),
+                    OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: AppColors.primary,
+                        side: const BorderSide(color: AppColors.primary),
+                      ),
+                      onPressed: () {
+                        consumptionService.clearAllData();
+                      },
+                      icon: const Icon(
+                        Icons.delete_forever_rounded,
+                        color: AppColors.primary,
+                      ),
+                      label: const Text("Delete"),
+                    ),
+                  ],
                 ),
               ],
             );

@@ -8,9 +8,9 @@ import 'package:provider/provider.dart';
 
 class HistoryCard extends StatefulWidget {
   final ConsumptionItemEntity item;
-  final HistoryViewModel viewModel;
+  final bool canEdit;
 
-  const HistoryCard({super.key, required this.item, required this.viewModel});
+  const HistoryCard({super.key, required this.item, this.canEdit = true});
 
   @override
   State<HistoryCard> createState() => _HistoryCardState();
@@ -18,10 +18,12 @@ class HistoryCard extends StatefulWidget {
 
 class _HistoryCardState extends State<HistoryCard> {
   late CustomSnack customSnack;
+  late HistoryViewModel viewModel;
 
   @override
   void initState() {
     customSnack = context.read<CustomSnack>();
+    viewModel = context.read<HistoryViewModel>();
     super.initState();
   }
 
@@ -53,8 +55,8 @@ class _HistoryCardState extends State<HistoryCard> {
     );
 
     if (res == true) {
-      await widget.viewModel.removeItem(item);
-      customSnack.success(text: 'Registro excluído com sucesso');
+      await viewModel.removeItem(item);
+      customSnack.success(text: 'Record deleted successfully');
     }
   }
 
@@ -97,7 +99,7 @@ class _HistoryCardState extends State<HistoryCard> {
       final newValue = double.tryParse(controller.text);
 
       if (newValue == null || newValue <= 0) {
-        customSnack.error(text: 'Por favor, insira um valor válido');
+        customSnack.error(text: 'Please enter a valid value');
         return;
       }
 
@@ -107,8 +109,8 @@ class _HistoryCardState extends State<HistoryCard> {
         value: newValue,
         type: item.type,
       );
-      await widget.viewModel.updateItem(updatedItem);
-      customSnack.success(text: 'Registro atualizado com sucesso');
+      await viewModel.updateItem(updatedItem);
+      customSnack.success(text: 'Record updated successfully');
     }
   }
 
@@ -120,8 +122,7 @@ class _HistoryCardState extends State<HistoryCard> {
     final unit = isCalorie ? 'kcal' : 'ml';
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      elevation: 1,
+      margin: EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
         side: BorderSide(color: color.withValues(alpha: 0.2)),
@@ -153,7 +154,7 @@ class _HistoryCardState extends State<HistoryCard> {
             ),
           ],
         ),
-        trailing: PopupMenuButton<String>(
+        trailing: widget.canEdit ? PopupMenuButton<String>(
           onSelected: (String result) async {
             if (result == 'delete') {
               await _confirmDelete(context, widget.item);
@@ -183,7 +184,7 @@ class _HistoryCardState extends State<HistoryCard> {
               ),
             ),
           ],
-        ),
+        ) : null,
       ),
     );
   }

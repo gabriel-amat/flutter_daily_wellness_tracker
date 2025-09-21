@@ -1,6 +1,6 @@
 import 'package:daily_wellness_tracker/features/entry/view/entry_screen.dart';
 import 'package:daily_wellness_tracker/features/dashboard/view/dashboard_screen.dart';
-import 'package:daily_wellness_tracker/features/history/view/history_view.dart';
+import 'package:daily_wellness_tracker/features/history/view/history_screen.dart';
 import 'package:daily_wellness_tracker/features/settings/view/settings_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -34,8 +34,8 @@ class _HomeScreenState extends State<HomeScreen> {
         controller: _pageController,
         onPageChanged: onPageChanged,
         physics: NeverScrollableScrollPhysics(),
-        children: const [
-          DashboardScreen(),
+        children: [
+          DashboardScreen(goToPage: onPageChanged),
           EntryScreen(),
           HistoryScreen(),
           SettingsScreen(),

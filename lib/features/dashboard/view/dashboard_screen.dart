@@ -1,14 +1,16 @@
-import 'package:daily_wellness_tracker/core/routes/navigation_controller.dart';
-import 'package:daily_wellness_tracker/features/entry/routes/entry_pages.dart';
+import 'package:daily_wellness_tracker/core/enums/entry_type_enum.dart';
+import 'package:daily_wellness_tracker/core/theme/app_colors.dart';
+import 'package:daily_wellness_tracker/core/theme/app_theme.dart';
 import 'package:daily_wellness_tracker/features/dashboard/view/widgets/progress_card.dart';
 import 'package:daily_wellness_tracker/features/dashboard/viewModel/dashboard_view_model.dart';
+import 'package:daily_wellness_tracker/features/history/view/widgets/history_card.dart';
 import 'package:daily_wellness_tracker/features/settings/viewModel/settings_view_model.dart';
-import 'package:daily_wellness_tracker/shared/consumption/service/consumption_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  final Function(int page) goToPage;
+  const DashboardScreen({super.key, required this.goToPage});
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -32,15 +34,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final navigator = context.read<NavigationController>();
-
     return RefreshIndicator.adaptive(
       onRefresh: () => _dashboardViewModel.fetchDashboardData(),
       child: SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
-        child: Consumer<DashboardViewModel>(
-          builder: (context, dashborad, child) {
-            if (dashborad.isLoading) {
+        child: Consumer2<DashboardViewModel, SettingsViewModel>(
+          builder: (context, dashboard, settings, child) {
+            if (dashboard.isLoading) {
               return const Center(child: CircularProgressIndicator.adaptive());
             }
 
@@ -50,81 +50,68 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 spacing: 24,
                 children: [
-                  Consumer2<SettingsViewModel, ConsumptionService>(
-                    builder: (context, settings, consumptionService, child) {
-                      return Column(
-                        spacing: 24,
-                        children: [
-                          ProgressCard(
-                            todayCalories: dashborad.todayCalories,
-                            calorieGoal: settings.calorieGoal,
-                            title: 'Today\'s Calories',
-                          ),
-                          ProgressCard(
-                            todayCalories: dashborad.todayWater,
-                            calorieGoal: settings.waterGoal,
-                            title: 'Today\'s Water',
-                          ),
-                        ],
-                      );
-                    },
+                  // Progress Cards
+                  Column(
+                    spacing: 24,
+                    children: [
+                      ProgressCard(
+                        todayCalories: dashboard.todayCalories,
+                        calorieGoal: settings.calorieGoal,
+                        entryType: EntryType.calorie,
+                      ),
+                      ProgressCard(
+                        todayCalories: dashboard.todayWater,
+                        calorieGoal: settings.waterGoal,
+                        entryType: EntryType.water,
+                      ),
+                    ],
                   ),
                   // Add Buttons
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(12),
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.grey.shade200,
-                          Colors.grey.shade100,
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                    ),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      navigator.push(routeName: EntryPages.entry);
+                  InkWell(
+                    onTap: () {
+                      widget.goToPage(1);
                     },
-                    icon: const Icon(Icons.restaurant),
-                    label: const Text('Add Entry'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 14,
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                          AppTheme.borderRadius,
+                        ),
+                        gradient: LinearGradient(
+                          colors: [AppColors.primary, AppColors.water],
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                        ),
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                      child: Text(
+                        "Add calorie or water",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                   ),
-                  // History
                   const Text(
                     'Last 3 Days',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(height: 12),
-                  ...dashborad.history.map(
-                    (day) => Card(
-                      elevation: 1,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: ListTile(
-                        leading: Icon(
-                          Icons.calendar_today,
-                          color: Colors.blueAccent,
-                        ),
-                        title: Text(day.date),
-                        subtitle: Text(
-                          'Calories: ${day.getCalories} kcal\nWater: ${day.getWater} L',
-                        ),
-                      ),
-                    ),
+                  //Last 3 days history
+                  ListView.builder(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: dashboard.history.length >= 3
+                        ? 3
+                        : dashboard.history.length,
+                    itemBuilder: (context, index) {
+                      return HistoryCard(
+                        item: dashboard.history[index],
+                        canEdit: false,
+                      );
+                    },
                   ),
                 ],
               ),

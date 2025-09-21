@@ -13,7 +13,8 @@ class EntryViewModel extends ChangeNotifier {
   bool isLoading = false;
   double todayTotalCalories = 0.0;
   double todayTotalWater = 0.0;
-  List<ConsumptionItemEntity> todayEntries = [];
+  List<ConsumptionItemEntity> todayCalorieEntries = [];
+  List<ConsumptionItemEntity> todayWaterEntries = [];
 
   Future<void> saveCalorieEntry({required double value}) async {
     isLoading = true;
@@ -42,27 +43,24 @@ class EntryViewModel extends ChangeNotifier {
   }
 
   Future<void> getTodayTotalCalories() async {
-    log('Fetching today\'s total calories');
+    log('Fetching total calories');
     final res = await _consumptionService.getTodayCalories();
     todayTotalCalories = res;
-    log('Today\'s total calories: $todayTotalCalories');
+    log('Today total calories: $todayTotalCalories');
     notifyListeners();
   }
 
   Future<void> getTodayTotalWater() async {
-    log('Fetching today\'s total water');
+    log('Fetching total water');
     final res = await _consumptionService.getTodayWater();
     todayTotalWater = res;
-    log('Today\'s total water: $todayTotalWater');
+    log('Today total water: $todayTotalWater');
     notifyListeners();
   }
 
   Future<void> getTodayEntries() async {
-    final calorieEntries = await _consumptionService.getTodayCalorieEntries();
-    final waterEntries = await _consumptionService.getTodayWaterEntries();
-    todayEntries = [...calorieEntries, ...waterEntries];
-    // Sort by newest first (assuming there's a timestamp or id)
-    todayEntries.sort((a, b) => (b.id ?? 0).compareTo(a.id ?? 0));
+    todayCalorieEntries = await _consumptionService.getTodayCalorieEntries();
+    todayWaterEntries = await _consumptionService.getTodayWaterEntries();
     notifyListeners();
   }
 }
