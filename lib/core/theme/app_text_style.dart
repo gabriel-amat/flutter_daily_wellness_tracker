@@ -10,4 +10,10 @@ class AppTextStyle {
   );
 
   static final subtitle = TextStyle(fontSize: 16, fontWeight: FontWeight.bold);
+
+  static final button = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+  );
 }

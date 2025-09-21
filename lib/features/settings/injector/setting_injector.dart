@@ -1,22 +1,24 @@
-import 'package:daily_wellness_tracker/features/settings/database/dao/settings_dao.dart';
-import 'package:daily_wellness_tracker/features/settings/database/repositories/settings_repository.dart';
-import 'package:daily_wellness_tracker/features/settings/viewModel/settings_view_model.dart';
+import 'package:daily_wellness_tracker/features/settings/data/data_sources/settings_data_source.dart';
+import 'package:daily_wellness_tracker/features/settings/data/repositories/settings_repository.dart';
+import 'package:daily_wellness_tracker/features/settings/domain/repositories/i_settings_repository.dart';
+import 'package:daily_wellness_tracker/features/settings/presentation/viewModel/settings_view_model.dart';
 import 'package:provider/provider.dart';
 
 class SettingInjector {
   static setup() => [
     //Dao
-    Provider(create: (_) => SettingsDao()),
+    Provider<SettingsDataSouce>(create: (_) => SettingsDataSouce()),
 
     //Repository
-    Provider(
-      create: (context) => SettingsRepository(dao: context.read<SettingsDao>()),
+    Provider<ISettingsRepository>(
+      create: (context) =>
+          SettingsRepository(dataSource: context.read<SettingsDataSouce>()),
     ),
 
     //Controller
     ChangeNotifierProvider(
       create: (context) =>
-          SettingsViewModel(repository: context.read<SettingsRepository>()),
+          SettingsViewModel(repository: context.read<ISettingsRepository>()),
     ),
   ];
 }

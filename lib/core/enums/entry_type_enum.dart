@@ -1,8 +1,8 @@
 enum EntryType {
-  calorie('Calorie'),
+  meal('Meal'),
   water('Water');
 
   const EntryType(this.text);
- 
+
   final String text;
 }

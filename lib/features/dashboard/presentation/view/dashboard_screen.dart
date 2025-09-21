@@ -1,0 +1,198 @@
+import 'package:daily_wellness_tracker/core/enums/entry_type_enum.dart';
+import 'package:daily_wellness_tracker/core/theme/app_colors.dart';
+import 'package:daily_wellness_tracker/core/theme/app_theme.dart';
+import 'package:daily_wellness_tracker/features/dashboard/presentation/view/widgets/progress_card.dart';
+import 'package:daily_wellness_tracker/features/dashboard/presentation/viewModel/dashboard_view_model.dart';
+import 'package:daily_wellness_tracker/features/settings/presentation/viewModel/settings_view_model.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+class DashboardScreen extends StatefulWidget {
+  final Function(int page) goToPage;
+  const DashboardScreen({super.key, required this.goToPage});
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  late final DashboardViewModel _dashboardViewModel;
+  late final SettingsViewModel _settingsViewModel;
+
+  @override
+  void initState() {
+    _dashboardViewModel = context.read<DashboardViewModel>();
+    _settingsViewModel = context.read<SettingsViewModel>();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _dashboardViewModel.fetchDashboardData();
+      _settingsViewModel.loadSettings();
+    });
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RefreshIndicator.adaptive(
+      onRefresh: () => _dashboardViewModel.fetchDashboardData(),
+      child: SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        child: Consumer2<DashboardViewModel, SettingsViewModel>(
+          builder: (context, dashboard, settings, child) {
+            if (dashboard.isLoading) {
+              return const Center(child: CircularProgressIndicator.adaptive());
+            }
+
+            return Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                spacing: 24,
+                children: [
+                  // Progress Cards
+                  Column(
+                    spacing: 24,
+                    children: [
+                      ProgressCard(
+                        todayMeals: dashboard.todayMeals,
+                        mealGoal: settings.mealGoal,
+                        entryType: EntryType.meal,
+                      ),
+                      ProgressCard(
+                        todayMeals: dashboard.todayWater,
+                        mealGoal: settings.waterGoal,
+                        entryType: EntryType.water,
+                      ),
+                    ],
+                  ),
+                  // Add Buttons
+                  InkWell(
+                    onTap: () {
+                      widget.goToPage(1);
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                          AppTheme.borderRadius,
+                        ),
+                        gradient: LinearGradient(
+                          colors: [AppColors.primary, AppColors.water],
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                        ),
+                      ),
+                      child: Text(
+                        "Add meal or water",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Text(
+                    'Last 3 Days',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  //Recent entries
+                  if (dashboard.hasHistory) ...[
+                    ListView.builder(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: _getRecentEntriesCount(dashboard),
+                      itemBuilder: (context, index) {
+                        final entry = _getRecentEntryAt(dashboard, index);
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: _buildHistoryItem(entry),
+                        );
+                      },
+                    ),
+                  ] else ...[
+                    Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.info, color: Colors.grey[400]),
+                          const Text(
+                            'No recent entries',
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  int _getRecentEntriesCount(DashboardViewModel dashboard) {
+    final totalEntries =
+        dashboard.mealHistory.length + dashboard.waterHistory.length;
+    return totalEntries >= 3 ? 3 : totalEntries;
+  }
+
+  Map<String, dynamic> _getRecentEntryAt(
+    DashboardViewModel dashboard,
+    int index,
+  ) {
+    // Combine and sort all entries by date
+    final List<Map<String, dynamic>> allEntries = [];
+
+    // Add meal entries
+    for (final meal in dashboard.mealHistory) {
+      allEntries.add({'type': 'meal', 'data': meal, 'date': meal.date});
+    }
+
+    // Add water entries
+    for (final waterEntry in dashboard.waterHistory) {
+      allEntries.add({
+        'type': 'water',
+        'data': waterEntry,
+        'date': waterEntry.date,
+      });
+    }
+
+    // Sort by date (newest first)
+    allEntries.sort(
+      (a, b) => (b['date'] as String).compareTo(a['date'] as String),
+    );
+
+    return allEntries[index];
+  }
+
+  Widget _buildHistoryItem(Map<String, dynamic> entry) {
+    final type = entry['type'] as String;
+    final data = entry['data'];
+
+    if (type == 'meal') {
+      final meal = data as dynamic; // MealEntity
+      return Card(
+        child: ListTile(
+          leading: const Icon(Icons.restaurant, color: Colors.orange),
+          title: Text(meal.name),
+          subtitle: Text('${meal.foods.length} food items'),
+          trailing: Text('${meal.totalCalories.toStringAsFixed(0)} cal'),
+        ),
+      );
+    } else {
+      final waterEntry = data as dynamic; // WaterIntakeEntity
+      return Card(
+        child: ListTile(
+          leading: const Icon(Icons.water_drop, color: Colors.blue),
+          title: const Text('Water Entry'),
+          trailing: Text('${waterEntry.amount.toStringAsFixed(0)} ml'),
+        ),
+      );
+    }
+  }
+}
