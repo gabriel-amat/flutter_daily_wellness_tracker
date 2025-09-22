@@ -2,6 +2,7 @@ import 'package:daily_wellness_tracker/core/helper/format_data.dart';
 import 'package:daily_wellness_tracker/core/theme/app_colors.dart';
 import 'package:daily_wellness_tracker/core/theme/app_text_style.dart';
 import 'package:daily_wellness_tracker/core/theme/app_theme.dart';
+import 'package:daily_wellness_tracker/features/entry/presentation/view/widgets/food_item_card.dart';
 import 'package:daily_wellness_tracker/features/entry/presentation/viewModel/entry_view_model.dart';
 import 'package:daily_wellness_tracker/shared/consumption/data/models/meal_entity.dart';
 import 'package:daily_wellness_tracker/shared/consumption/data/models/food_item_entity.dart';
@@ -19,10 +20,7 @@ class MealEntryCard extends StatefulWidget {
 class _MealEntryCardState extends State<MealEntryCard> {
   final _formKey = GlobalKey<FormState>();
   final _mealNameController = TextEditingController();
-
-  // Current food being added
   final _foodNameController = TextEditingController();
-  final _descriptionController = TextEditingController();
   final _calorieController = TextEditingController();
   final _carbsController = TextEditingController();
   final _proteinController = TextEditingController();
@@ -56,7 +54,6 @@ class _MealEntryCardState extends State<MealEntryCard> {
     _formKey.currentState?.dispose();
     _mealNameController.dispose();
     _foodNameController.dispose();
-    _descriptionController.dispose();
     _calorieController.dispose();
     _carbsController.dispose();
     _proteinController.dispose();
@@ -73,20 +70,16 @@ class _MealEntryCardState extends State<MealEntryCard> {
     }
 
     final name = _foodNameController.text.trim();
-    final description = _descriptionController.text.trim();
     final calories = double.tryParse(_calorieController.text) ?? 0.0;
     final carbs = double.tryParse(_carbsController.text) ?? 0.0;
     final protein = double.tryParse(_proteinController.text) ?? 0.0;
     final fat = double.tryParse(_fatController.text) ?? 0.0;
-    final portionUnit = _portionUnitController.text.trim().isEmpty
-        ? '1 serving'
-        : _portionUnitController.text.trim();
+    final portionUnit = _portionUnitController.text.trim();
     final portions = double.tryParse(_portionsController.text) ?? 1.0;
 
     final foodItem = FoodEntity(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
       name: name,
-      description: description,
       caloriesPerPortion: calories,
       carbsPerPortion: carbs,
       proteinPerPortion: protein,
@@ -107,9 +100,7 @@ class _MealEntryCardState extends State<MealEntryCard> {
       return;
     }
 
-    final mealName = _mealNameController.text.trim().isEmpty
-        ? 'Custom Meal'
-        : _mealNameController.text.trim();
+    final mealName = _mealNameController.text.trim();
 
     final meal = MealEntity(
       name: mealName,
@@ -127,7 +118,6 @@ class _MealEntryCardState extends State<MealEntryCard> {
 
   void _clearFoodForm() {
     _foodNameController.clear();
-    _descriptionController.clear();
     _calorieController.clear();
     _carbsController.clear();
     _proteinController.clear();
@@ -139,15 +129,11 @@ class _MealEntryCardState extends State<MealEntryCard> {
   void _clearAllForms() {
     _mealNameController.clear();
     _clearFoodForm();
-    setState(() {
-      _foodItems.clear();
-    });
+    setState(() => _foodItems.clear());
   }
 
   void _removeFood(int index) {
-    setState(() {
-      _foodItems.removeAt(index);
-    });
+    setState(() => _foodItems.removeAt(index));
     snack.success(text: 'Food item removed');
   }
 
@@ -165,26 +151,25 @@ class _MealEntryCardState extends State<MealEntryCard> {
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 20,
             children: [
-              _buildMealNameField(),
+              TextFormField(
+                controller: _mealNameController,
+                decoration: InputDecoration(
+                  labelText: 'Meal Name ',
+                  hintText: 'Ex: Breakfast, Lunch, Dinner',
+                  prefixIcon: const Icon(
+                    Icons.restaurant,
+                    color: AppColors.primary,
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(AppTheme.borderRadius),
+                  ),
+                ),
+              ),
               _buildFoodForm(),
               _buildActionButtons(),
               if (_foodItems.isNotEmpty) _buildFoodList(),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMealNameField() {
-    return TextFormField(
-      controller: _mealNameController,
-      decoration: InputDecoration(
-        labelText: 'Meal Name ',
-        hintText: 'Ex: Breakfast, Lunch, Dinner',
-        prefixIcon: const Icon(Icons.restaurant, color: AppColors.primary),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppTheme.borderRadius),
         ),
       ),
     );
@@ -219,21 +204,6 @@ class _MealEntryCardState extends State<MealEntryCard> {
                 return null;
               },
             ),
-            // Description
-            TextFormField(
-              controller: _descriptionController,
-              decoration: InputDecoration(
-                labelText: 'Description (optional)',
-                hintText: 'Ex: Grilled chicken breast',
-                prefixIcon: const Icon(
-                  Icons.description,
-                  color: AppColors.primary,
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(AppTheme.borderRadius),
-                ),
-              ),
-            ),
             DropdownButtonFormField<String>(
               initialValue: null,
               decoration: InputDecoration(
@@ -244,16 +214,11 @@ class _MealEntryCardState extends State<MealEntryCard> {
                   color: AppColors.primary,
                 ),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(
-                    AppTheme.borderRadius,
-                  ),
+                  borderRadius: BorderRadius.circular(AppTheme.borderRadius),
                 ),
               ),
               items: _commonPortionUnits.map((unit) {
-                return DropdownMenuItem<String>(
-                  value: unit,
-                  child: Text(unit),
-                );
+                return DropdownMenuItem<String>(value: unit, child: Text(unit));
               }).toList(),
               onChanged: (value) {
                 if (value != null) {
@@ -277,6 +242,9 @@ class _MealEntryCardState extends State<MealEntryCard> {
               validator: (value) {
                 if (value == null || value.trim().isEmpty) {
                   return 'Please enter the number of portions';
+                }
+                if (double.tryParse(value) == null) {
+                  return 'Please enter a valid number';
                 }
                 return null;
               },
@@ -408,14 +376,9 @@ class _MealEntryCardState extends State<MealEntryCard> {
                   ),
                   onPressed: viewModel.isLoading ? null : _onSaveMeal,
                   icon: viewModel.isLoading
-                      ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Colors.white,
-                            ),
-                            strokeWidth: 2,
+                      ? CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
                           ),
                         )
                       : const Icon(Icons.save, color: Colors.white),
@@ -462,41 +425,9 @@ class _MealEntryCardState extends State<MealEntryCard> {
         ),
         const SizedBox(height: 12),
         ...List.generate(_foodItems.length, (index) {
-          
-          final food = _foodItems[index];
-
-          return Card(
-            margin: const EdgeInsets.only(bottom: 8),
-            child: ListTile(
-              leading: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Icon(Icons.restaurant, color: AppColors.primary),
-              ),
-              title: Text(food.name),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (food.description.isNotEmpty) Text(food.description),
-                  Text(
-                    '${food.portions} × ${food.portionUnit} = ${food.totalCalories.toStringAsFixed(0)} kcal',
-                  ),
-                  if (food.totalCarbs > 0 ||
-                      food.totalProtein > 0 ||
-                      food.totalFat > 0)
-                    Text(
-                      'C: ${food.totalCarbs.toStringAsFixed(1)}g, P: ${food.totalProtein.toStringAsFixed(1)}g, F: ${food.totalFat.toStringAsFixed(1)}g',
-                    ),
-                ],
-              ),
-              trailing: IconButton(
-                icon: const Icon(Icons.delete_outline, color: Colors.red),
-                onPressed: () => _removeFood(index),
-              ),
-            ),
+          return FoodItemCard(
+            food: _foodItems[index],
+            onRemove: () => _removeFood(index),
           );
         }),
       ],

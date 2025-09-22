@@ -1,8 +1,6 @@
 class FoodEntity {
   final String id;
   final String name;
-  final String description;
-
   final double caloriesPerPortion;
   final double carbsPerPortion;
   final double proteinPerPortion;
@@ -13,7 +11,6 @@ class FoodEntity {
   const FoodEntity({
     required this.id,
     required this.name,
-    required this.description,
     required this.caloriesPerPortion,
     required this.carbsPerPortion,
     required this.proteinPerPortion,
@@ -26,7 +23,6 @@ class FoodEntity {
     return FoodEntity(
       id: json['id'] as String,
       name: json['name'] as String,
-      description: json['description'] as String,
       caloriesPerPortion: json['calories_per_portion'] as double,
       carbsPerPortion: json['carbs_per_portion'] as double,
       proteinPerPortion: json['protein_per_portion'] as double,
@@ -40,7 +36,6 @@ class FoodEntity {
     return {
       'id': id,
       'name': name,
-      'description': description,
       'calories_per_portion': caloriesPerPortion,
       'carbs_per_portion': carbsPerPortion,
       'protein_per_portion': proteinPerPortion,
@@ -58,7 +53,6 @@ class FoodEntity {
   FoodEntity copyWith({
     String? id,
     String? name,
-    String? description,
     double? caloriesPerPortion,
     double? carbsPerPortion,
     double? proteinPerPortion,
@@ -69,7 +63,6 @@ class FoodEntity {
     return FoodEntity(
       id: id ?? this.id,
       name: name ?? this.name,
-      description: description ?? this.description,
       caloriesPerPortion: caloriesPerPortion ?? this.caloriesPerPortion,
       carbsPerPortion: carbsPerPortion ?? this.carbsPerPortion,
       proteinPerPortion: proteinPerPortion ?? this.proteinPerPortion,

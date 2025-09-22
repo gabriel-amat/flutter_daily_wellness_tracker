@@ -1,4 +1,4 @@
-import 'package:daily_wellness_tracker/features/entry/presentation/view/entry_screen.dart';
+import 'package:daily_wellness_tracker/features/entry/presentation/view/screens/entry_screen.dart';
 import 'package:daily_wellness_tracker/features/dashboard/presentation/view/dashboard_screen.dart';
 import 'package:daily_wellness_tracker/features/history/presentation/view/history_screen.dart';
 import 'package:daily_wellness_tracker/features/settings/presentation/view/settings_screen.dart';

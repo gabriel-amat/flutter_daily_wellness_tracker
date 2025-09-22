@@ -104,7 +104,6 @@ class MealConsumptionService {
     await _dataSource.removeWaterEntry(waterEntry);
   }
 
-  // UTILITY METHODS
   Future<List<MealEntity>> getAllMeals() async {
     return await _dataSource.getAllMeals();
   }

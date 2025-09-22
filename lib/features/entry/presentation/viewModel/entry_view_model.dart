@@ -107,7 +107,6 @@ class EntryViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // CONVENIENCE METHOD
   Future<void> getTodayData() async {
     await Future.wait([
       getTodayTotalCalories(),

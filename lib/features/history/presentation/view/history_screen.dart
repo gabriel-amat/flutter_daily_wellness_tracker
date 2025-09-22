@@ -2,9 +2,11 @@ import 'package:daily_wellness_tracker/core/theme/app_colors.dart';
 import 'package:daily_wellness_tracker/core/theme/app_text_style.dart';
 import 'package:daily_wellness_tracker/core/theme/app_theme.dart';
 import 'package:daily_wellness_tracker/features/history/presentation/view/widgets/filter_section_widget.dart';
+import 'package:daily_wellness_tracker/features/history/presentation/view/widgets/history_item.dart';
 import 'package:daily_wellness_tracker/features/history/presentation/view/widgets/statistics_card.dart';
 import 'package:daily_wellness_tracker/features/history/presentation/viewModel/history_view_model.dart';
 import 'package:daily_wellness_tracker/shared/ui/snack/custom_snack.dart';
+import 'package:daily_wellness_tracker/shared/ui/widgets/empty_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -114,7 +116,6 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         padding: const EdgeInsets.only(bottom: 8.0),
                         child: StatisticsCard(stats: viewModel.getStatistics()),
                       ),
-
                     _buildHistoryContent(viewModel),
                   ],
                 );
@@ -143,45 +144,22 @@ class _HistoryScreenState extends State<HistoryScreen> {
     }
 
     if (!viewModel.hasFilteredData) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          spacing: 8,
-          children: [
-            Icon(Icons.history, size: 64, color: Colors.grey[400]),
-            Text(
-              'No records found',
-              style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
-            ),
-            Text('Start by adding meals or water'),
-          ],
-        ),
+      return EmptyList(
+        text: 'No records found\nStart by adding meals or water',
       );
     }
 
-    // Create a combined list of entries with their types
-    final List<dynamic> allEntries = [];
+    final List<Map<String, dynamic>> allEntries = [];
 
-    // Add meal entries
     for (final meal in viewModel.filteredMeals) {
       allEntries.add({'type': 'meal', 'data': meal});
     }
 
-    // Add water entries
     for (final waterEntry in viewModel.filteredWaterEntries) {
       allEntries.add({'type': 'water', 'data': waterEntry});
     }
 
-    // Sort by date (newest first) - assuming both entities have date strings
-    allEntries.sort((a, b) {
-      final aDate = a['type'] == 'meal'
-          ? (a['data'] as dynamic).date
-          : (a['data'] as dynamic).date;
-      final bDate = b['type'] == 'meal'
-          ? (b['data'] as dynamic).date
-          : (b['data'] as dynamic).date;
-      return bDate.compareTo(aDate);
-    });
+    allEntries.sort((a, b) => b['data'].date.compareTo(a['data'].date));
 
     return ListView.builder(
       shrinkWrap: true,
@@ -192,61 +170,9 @@ class _HistoryScreenState extends State<HistoryScreen> {
         final entry = allEntries[index];
         return Padding(
           padding: const EdgeInsets.only(bottom: 8.0),
-          child: _buildHistoryItem(entry),
+          child: HistoryItem(entry: entry),
         );
       },
     );
-  }
-
-  Widget _buildHistoryItem(Map<String, dynamic> entry) {
-    final type = entry['type'] as String;
-    final data = entry['data'];
-
-    if (type == 'meal') {
-      final meal = data as dynamic; // MealEntity
-      return Card(
-        child: ListTile(
-          leading: const Icon(Icons.restaurant, color: Colors.orange),
-          title: Text(meal.name),
-          subtitle: Text('${meal.foods.length} food items'),
-          trailing: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text('${meal.totalCalories.toStringAsFixed(0)} cal'),
-              Text(
-                meal.date.split(' ')[0],
-                style: const TextStyle(fontSize: 12),
-              ),
-            ],
-          ),
-          onTap: () {
-            // TODO: Navigate to meal details or show meal info
-          },
-        ),
-      );
-    } else {
-      final waterEntry = data as dynamic; // WaterIntakeEntity
-      return Card(
-        child: ListTile(
-          leading: const Icon(Icons.water_drop, color: Colors.blue),
-          title: const Text('Water Entry'),
-          trailing: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text('${waterEntry.amount.toStringAsFixed(0)} ml'),
-              Text(
-                waterEntry.date.split(' ')[0],
-                style: const TextStyle(fontSize: 12),
-              ),
-            ],
-          ),
-          onTap: () {
-            // TODO: Navigate to water entry details or show edit dialog
-          },
-        ),
-      );
-    }
   }
 }

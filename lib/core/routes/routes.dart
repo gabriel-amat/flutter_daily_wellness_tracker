@@ -7,18 +7,16 @@ import 'package:flutter/material.dart';
 class CustomRouter {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     final allRoutes = {
-      ...HomeRoutes.routes,
-      ...EntryRoutes.routes,
+      ...HomeRoutes.getRoutes(settings),
+      ...EntryRoutes.getRoutes(settings),
       ...OnboardingRoutes.routes,
-      //
     };
 
     final builder = allRoutes[settings.name];
     if (builder != null) {
-      return MaterialPageRoute(builder: builder);
+      return MaterialPageRoute(builder: builder, settings: settings);
     }
 
-    // Fallback para onboarding se a rota não for encontrada
     return MaterialPageRoute(builder: allRoutes[OnboardingPages.onboarding]!);
   }
 }

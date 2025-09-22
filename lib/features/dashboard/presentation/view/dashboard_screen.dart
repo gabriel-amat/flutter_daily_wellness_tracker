@@ -1,9 +1,11 @@
 import 'package:daily_wellness_tracker/core/enums/entry_type_enum.dart';
 import 'package:daily_wellness_tracker/core/theme/app_colors.dart';
 import 'package:daily_wellness_tracker/core/theme/app_theme.dart';
+import 'package:daily_wellness_tracker/features/history/presentation/view/widgets/history_item.dart';
 import 'package:daily_wellness_tracker/features/dashboard/presentation/view/widgets/progress_card.dart';
 import 'package:daily_wellness_tracker/features/dashboard/presentation/viewModel/dashboard_view_model.dart';
 import 'package:daily_wellness_tracker/features/settings/presentation/viewModel/settings_view_model.dart';
+import 'package:daily_wellness_tracker/shared/ui/widgets/empty_list.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -65,7 +67,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ],
                   ),
-                  // Add Buttons
                   InkWell(
                     onTap: () {
                       widget.goToPage(1);
@@ -99,32 +100,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   //Recent entries
                   if (dashboard.hasHistory) ...[
-                    ListView.builder(
-                      padding: EdgeInsets.zero,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _getRecentEntriesCount(dashboard),
-                      itemBuilder: (context, index) {
-                        final entry = _getRecentEntryAt(dashboard, index);
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: _buildHistoryItem(entry),
-                        );
-                      },
-                    ),
+                    _buildHistoryList(dashboard),
                   ] else ...[
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.info, color: Colors.grey[400]),
-                          const Text(
-                            'No recent entries',
-                            style: TextStyle(color: Colors.grey),
-                          ),
-                        ],
-                      ),
-                    ),
+                    EmptyList(text: 'No recent entries'),
                   ],
                 ],
               ),
@@ -135,64 +113,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  int _getRecentEntriesCount(DashboardViewModel dashboard) {
-    final totalEntries =
-        dashboard.mealHistory.length + dashboard.waterHistory.length;
-    return totalEntries >= 3 ? 3 : totalEntries;
-  }
-
-  Map<String, dynamic> _getRecentEntryAt(
-    DashboardViewModel dashboard,
-    int index,
-  ) {
-    // Combine and sort all entries by date
+  Widget _buildHistoryList(DashboardViewModel dashboard) {
     final List<Map<String, dynamic>> allEntries = [];
 
-    // Add meal entries
     for (final meal in dashboard.mealHistory) {
-      allEntries.add({'type': 'meal', 'data': meal, 'date': meal.date});
+      allEntries.add({'type': 'meal', 'data': meal});
     }
 
-    // Add water entries
     for (final waterEntry in dashboard.waterHistory) {
-      allEntries.add({
-        'type': 'water',
-        'data': waterEntry,
-        'date': waterEntry.date,
-      });
+      allEntries.add({'type': 'water', 'data': waterEntry});
     }
 
-    // Sort by date (newest first)
-    allEntries.sort(
-      (a, b) => (b['date'] as String).compareTo(a['date'] as String),
+    allEntries.sort((a, b) => b['data'].date.compareTo(a['data'].date));
+
+    return ListView.builder(
+      padding: EdgeInsets.zero,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: allEntries.length >= 3 ? 3 : allEntries.length,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 8.0),
+          child: HistoryItem(entry: allEntries[index]),
+        );
+      },
     );
-
-    return allEntries[index];
-  }
-
-  Widget _buildHistoryItem(Map<String, dynamic> entry) {
-    final type = entry['type'] as String;
-    final data = entry['data'];
-
-    if (type == 'meal') {
-      final meal = data as dynamic; // MealEntity
-      return Card(
-        child: ListTile(
-          leading: const Icon(Icons.restaurant, color: Colors.orange),
-          title: Text(meal.name),
-          subtitle: Text('${meal.foods.length} food items'),
-          trailing: Text('${meal.totalCalories.toStringAsFixed(0)} cal'),
-        ),
-      );
-    } else {
-      final waterEntry = data as dynamic; // WaterIntakeEntity
-      return Card(
-        child: ListTile(
-          leading: const Icon(Icons.water_drop, color: Colors.blue),
-          title: const Text('Water Entry'),
-          trailing: Text('${waterEntry.amount.toStringAsFixed(0)} ml'),
-        ),
-      );
-    }
   }
 }

@@ -6,9 +6,8 @@ import 'package:daily_wellness_tracker/shared/consumption/data/models/water_inta
 
 class MealConsumptionDataSource {
   static const String _mealsKey = 'meals_data';
-  static const String _waterKey = 'water_data'; // Keep water separate
+  static const String _waterKey = 'water_data';
 
-  // MEAL OPERATIONS (using MealEntity)
   Future<void> addMeal(MealEntity meal) async {
     final prefs = await DBHelper.prefs;
     meal.id ??= DateTime.now().millisecondsSinceEpoch.toDouble();
@@ -131,7 +130,6 @@ class MealConsumptionDataSource {
     await prefs.setString(_waterKey, json.encode(waterJson));
   }
 
-  // UTILITY METHODS
   Future<void> clearAllData() async {
     final prefs = await DBHelper.prefs;
     await prefs.remove(_mealsKey);

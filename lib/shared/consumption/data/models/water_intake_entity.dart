@@ -1,5 +1,3 @@
-// Dedicated entity for water intake tracking only
-// Meals are now handled by MealEntity + FoodEntity
 class WaterIntakeEntity {
   double? id;
   String date;
