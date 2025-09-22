@@ -41,6 +41,5 @@ This project follows **Clean Architecture** principles with feature-based organi
 ## 👨‍💻 Author
 
 **Gabriel Amat**
-- GitHub: [@gabriel-amat](https://github.com/gabriel-amat)
 
 **Made with ❤️ and Flutter**
