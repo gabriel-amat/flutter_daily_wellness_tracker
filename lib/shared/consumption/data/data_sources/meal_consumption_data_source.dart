@@ -67,7 +67,6 @@ class MealConsumptionDataSource {
     log('Removed meal: ${meal.name}');
   }
 
-  // NUTRITION TOTALS BY DATE
   Future<double> getTotalCaloriesByDate(String date) async {
     final meals = await getMealsByDate(date);
     return meals.fold<double>(0.0, (total, meal) => total + meal.totalCalories);
@@ -88,7 +87,7 @@ class MealConsumptionDataSource {
     return meals.fold<double>(0.0, (total, meal) => total + meal.totalFat);
   }
 
-  // WATER OPERATIONS (use WaterIntakeEntity)
+  // WATER
   Future<void> addWaterEntry(WaterIntakeEntity waterItem) async {
     final prefs = await DBHelper.prefs;
     waterItem.id ??= DateTime.now().millisecondsSinceEpoch.toDouble();
@@ -98,7 +97,7 @@ class MealConsumptionDataSource {
 
     final waterJson = existingWater.map((e) => e.toJson()).toList();
     await prefs.setString(_waterKey, json.encode(waterJson));
-    log('Added water entry: ${waterItem.amount}ml');
+    log('add water entry: ${waterItem.amount}');
   }
 
   Future<List<WaterIntakeEntity>> getAllWaterEntries() async {
@@ -135,17 +134,5 @@ class MealConsumptionDataSource {
     await prefs.remove(_mealsKey);
     await prefs.remove(_waterKey);
     log('Cleared all consumption data');
-  }
-
-  Future<void> clearMealsData() async {
-    final prefs = await DBHelper.prefs;
-    await prefs.remove(_mealsKey);
-    log('Cleared all meals data');
-  }
-
-  Future<void> clearWaterData() async {
-    final prefs = await DBHelper.prefs;
-    await prefs.remove(_waterKey);
-    log('Cleared all water data');
   }
 }

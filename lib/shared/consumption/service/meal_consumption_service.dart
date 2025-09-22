@@ -10,10 +10,10 @@ class MealConsumptionService {
   MealConsumptionService({required MealConsumptionDataSource dataSource})
     : _dataSource = dataSource;
 
-  // MEAL OPERATIONS
+  // MEAL
   Future<void> addMeal(MealEntity meal) async {
     meal.date = FormatDate.dateTimeToString(DateTime.now());
-    log('Adding meal: ${meal.name} with ${meal.totalCalories} calories');
+    log('Adding meal: ${meal.name}');
     await _dataSource.addMeal(meal);
   }
 
@@ -40,7 +40,6 @@ class MealConsumptionService {
     await _dataSource.removeMeal(meal);
   }
 
-  // NUTRITION TOTALS
   Future<double> getTodayCalories() async {
     final today = FormatDate.dateTimeToString(DateTime.now());
     return await _dataSource.getTotalCaloriesByDate(today);
@@ -66,12 +65,12 @@ class MealConsumptionService {
   }
 
   // WATER OPERATIONS
-  Future<void> addWaterEntry(double milliliters) async {
+  Future<void> addWaterEntry(double data) async {
     final waterEntry = WaterIntakeEntity(
       date: FormatDate.dateTimeToString(DateTime.now()),
-      amount: milliliters,
+      amount: data,
     );
-    log('Adding water entry: ${milliliters}ml');
+    log('Adding water entry: ${data}ml');
     await _dataSource.addWaterEntry(waterEntry);
   }
 
@@ -95,7 +94,6 @@ class MealConsumptionService {
 
   Future<void> updateWaterEntry(WaterIntakeEntity waterEntry) async {
     log('Updating water entry: ${waterEntry.amount}ml');
-    // Remove the old entry and add the updated one
     await _dataSource.removeWaterEntry(waterEntry);
     await _dataSource.addWaterEntry(waterEntry);
   }
@@ -110,13 +108,5 @@ class MealConsumptionService {
 
   Future<void> clearAllData() async {
     await _dataSource.clearAllData();
-  }
-
-  Future<void> clearMealsOnly() async {
-    await _dataSource.clearMealsData();
-  }
-
-  Future<void> clearWaterOnly() async {
-    await _dataSource.clearWaterData();
   }
 }

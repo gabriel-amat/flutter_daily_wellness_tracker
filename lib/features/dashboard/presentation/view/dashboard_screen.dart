@@ -1,6 +1,7 @@
 import 'package:daily_wellness_tracker/core/enums/entry_type_enum.dart';
 import 'package:daily_wellness_tracker/core/theme/app_colors.dart';
 import 'package:daily_wellness_tracker/core/theme/app_theme.dart';
+import 'package:daily_wellness_tracker/features/dashboard/presentation/view/widgets/nutrition_card.dart';
 import 'package:daily_wellness_tracker/features/history/presentation/view/widgets/history_item.dart';
 import 'package:daily_wellness_tracker/features/dashboard/presentation/view/widgets/progress_card.dart';
 import 'package:daily_wellness_tracker/features/dashboard/presentation/viewModel/dashboard_view_model.dart';
@@ -56,7 +57,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     spacing: 24,
                     children: [
                       ProgressCard(
-                        todayMeals: dashboard.todayMeals,
+                        todayMeals: dashboard.todayCalories,
                         mealGoal: settings.mealGoal,
                         entryType: EntryType.meal,
                       ),
@@ -67,6 +68,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ],
                   ),
+
+                  NutritionCard(),
+
                   InkWell(
                     onTap: () {
                       widget.goToPage(1);

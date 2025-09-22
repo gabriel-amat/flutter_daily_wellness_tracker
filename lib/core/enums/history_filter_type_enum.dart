@@ -1,0 +1,1 @@
+enum HistoryFilterType { all, meals, water }

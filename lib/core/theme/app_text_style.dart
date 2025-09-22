@@ -16,4 +16,6 @@ class AppTextStyle {
     fontWeight: FontWeight.bold,
     color: Colors.white,
   );
+
+  static final normal = TextStyle(fontSize: 14, color: Colors.grey[600]);
 }

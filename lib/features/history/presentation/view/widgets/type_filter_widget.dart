@@ -1,3 +1,4 @@
+import 'package:daily_wellness_tracker/core/enums/history_filter_type_enum.dart';
 import 'package:daily_wellness_tracker/core/theme/app_colors.dart';
 import 'package:daily_wellness_tracker/features/history/presentation/view/widgets/custom_filter_chip.dart';
 import 'package:daily_wellness_tracker/features/history/presentation/viewModel/history_view_model.dart';

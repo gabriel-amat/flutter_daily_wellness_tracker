@@ -26,7 +26,7 @@ class ProgressCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              entryType == EntryType.meal ? "Today's Meals" : "Today's Water",
+              entryType == EntryType.meal ? "Today's Calories" : "Today's Water",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),
