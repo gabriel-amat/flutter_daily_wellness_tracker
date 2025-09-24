@@ -2,7 +2,7 @@
 
 A Flutter application for tracking daily wellness activities including calorie intake and water consumption. Built with MVVM architecture and modern Flutter practices.
 
-## � Screenshots
+## Screenshots
 
 <div align="center">
   <img src="assets/screenshots/onboarding.png" width="250" alt="Onboarding"/>
@@ -19,7 +19,7 @@ A Flutter application for tracking daily wellness activities including calorie i
   <img src="assets/screenshots/settings.png" width="250" alt="Settings"/>
 </div>
 
-## �📱 Features
+## 📱 Features
 
 ### 🚀 **Onboarding**
 - Smooth user introduction flow
